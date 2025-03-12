@@ -39,6 +39,11 @@ import (
 	dto "github.com/prometheus/client_model/go"
 )
 
+const(
+	TiDBCount = 20
+	TiKVCount = 50
+)
+
 // Client metrics.
 var (
 	TiKVTxnCmdHistogram                            *prometheus.HistogramVec

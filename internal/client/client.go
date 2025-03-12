@@ -40,6 +40,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"math/rand"
 	"runtime/trace"
 	"strconv"
 	"strings"
@@ -400,6 +401,81 @@ func (a *connArray) Close() {
 	close(a.done)
 }
 
+var ReqDuration = []time.Duration{ // 0.5ms ~ 1.5days
+	time.Duration(rand.Intn(300)) * time.Microsecond,
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(1)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(2)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(3)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(4)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(5)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(6)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(7)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(8)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(9)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(10)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(11)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(12)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(13)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(14)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(15)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(16)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(17)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(18)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(19)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(20)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(21)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(22)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(23)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(24)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(25)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(26)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(27)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(28)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(29)),
+	time.Duration(rand.Intn(300)) * time.Microsecond * time.Duration(math.Exp2(30)),
+}
+
+var RPCNetLatency = []time.Duration{ // 50us ~ 105s
+	time.Duration(rand.Intn(30)) * time.Microsecond,
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(1)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(2)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(3)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(4)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(5)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(6)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(7)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(8)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(9)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(10)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(11)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(12)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(13)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(14)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(15)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(16)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(17)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(18)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(19)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(20)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(21)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(22)),
+	time.Duration(rand.Intn(30)) * time.Microsecond * time.Duration(math.Exp2(23)),
+}
+
+var BatchRequest = []float64{ // 1 ~ 1024
+	1,
+	2,
+	4,
+	8,
+	16,
+	32,
+	64,
+	128,
+	256,
+	512,
+	1024,
+}
+
 type option struct {
 	gRPCDialOptions []grpc.DialOption
 	security        config.Security
@@ -613,6 +689,24 @@ func (c *RPCClient) updateSendReqHistogramAndExecStats(req *tikvrpc.Request, res
 		sendReqCounterCache.Store(counterKey, counter)
 	}
 
+	if !isInternal {
+		for i := 0; i < metrics.TiDBCount; i++ { // tidb count
+			for j := 0; j < metrics.TiKVCount; j++ { // tikv count
+				for k := 0; k < 15; k++ { // type count
+					tp := rand.Int31n(15)
+					storeIDStr = fmt.Sprintf("%03d%03d", i, j)
+					metrics.TiKVSendReqHistogram.WithLabelValues(tikvrpc.CmdType(tp).String(), storeIDStr,
+						strconv.FormatBool(staleRead), strconv.FormatBool(false)).Observe(ReqDuration[rand.Int63n(30)].Seconds())
+
+					metrics.TiKVSendReqCounter.WithLabelValues(tikvrpc.CmdType(tp).String(), storeIDStr, strconv.FormatBool(staleRead),
+						counterKey.requestSource, strconv.FormatBool(false))
+
+					metrics.TiKVSendReqTimeCounter.WithLabelValues(tikvrpc.CmdType(tp).String(), storeIDStr,
+						strconv.FormatBool(staleRead), counterKey.requestSource, strconv.FormatBool(false))
+				}
+			}
+		}
+	}
 	hist.(prometheus.Observer).Observe(secs)
 	counter.(sendReqCounterCacheValue).counter.Inc()
 	counter.(sendReqCounterCacheValue).timeCounter.Add(secs)
@@ -638,6 +732,15 @@ func (c *RPCClient) updateSendReqHistogramAndExecStats(req *tikvrpc.Request, res
 				rpcNetLatencyHistCache.Store(cacheKey, latHist)
 			}
 			latency := elapsed - time.Duration(totalRpcWallTimeNs)*time.Nanosecond
+			if !isInternal {
+				for i := 0; i < metrics.TiDBCount; i++ { // tidb count
+					for j := 0; j < metrics.TiKVCount; j++ { // tikv count
+						storeIDStr = fmt.Sprintf("%03d%03d", i, j)
+						metrics.TiKVRPCNetLatencyHistogram.WithLabelValues(storeIDStr, strconv.FormatBool(isInternal)).Observe(float64(RPCNetLatency[rand.Int63n(23)].Seconds()))
+						latHist.(prometheus.Observer).Observe(float64(RPCNetLatency[rand.Int63n(23)].Seconds()))
+					}
+				}
+			}
 			latHist.(prometheus.Observer).Observe(latency.Seconds())
 		}
 	}

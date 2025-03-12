@@ -40,6 +40,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"math/rand"
 	"runtime"
 	"runtime/trace"
 	"strings"
@@ -558,6 +559,14 @@ func (a *batchConn) batchSendLoop(cfg config.TiKVClient) {
 			}
 		}
 		length := a.reqBuilder.len()
+
+		for i := 0; i < metrics.TiDBCount; i++ { // tidb count
+			for j := 0; j < metrics.TiKVCount; j++ { // tikv count
+				// a.metrics.pendingRequests.Observe(BatchRequest[rand.Int63n(10)])
+				label := fmt.Sprintf("%03d%03d", i, j)
+				metrics.TiKVBatchPendingRequests.WithLabelValues(label).Observe(BatchRequest[rand.Int63n(10)])
+			}
+		}
 		a.metrics.pendingRequests.Observe(float64(len(a.batchCommandsCh) + length))
 		if uint(length) == 0 {
 			// The batch command channel is closed.
@@ -647,6 +656,13 @@ func (a *batchConn) getClientAndSend() {
 		cli.send(forwardedHost, req)
 	}
 	if batch > 0 {
+		for i := 0; i < metrics.TiDBCount; i++ { // tidb count
+			for j := 0; j < metrics.TiKVCount; j++ { // tikv count
+				// a.metrics.batchSize.Observe(BatchRequest[rand.Int63n(10)])
+				label := fmt.Sprintf("%03d%03d", i, j)
+				metrics.TiKVBatchRequests.WithLabelValues(label).Observe(BatchRequest[rand.Int63n(10)])
+			}
+		}
 		a.metrics.batchSize.Observe(float64(batch))
 	}
 }
